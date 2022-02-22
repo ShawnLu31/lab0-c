@@ -32,6 +32,7 @@ void q_free(struct list_head *l)
     element_t *del, *next;
     /* del, the element to be free. next, the next element of del */
     list_for_each_entry_safe (del, next, l, list) {
+        list_del(&del->list);
         q_release_element(del);
     }
     free(l);

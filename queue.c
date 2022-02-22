@@ -50,9 +50,17 @@ bool q_insert_head(struct list_head *head, char *s)
 {
     if (!head || !s)
         return false; /* queue is NULL or s is NULL*/
-    element_t *e = q_gen_element(s);
+    element_t *e = malloc(sizeof(element_t));
     if (!e)
-        return false; /* could not allocate space */
+        return NULL; /* could not allocate space */
+    int len = strlen(s) + 1;
+    e->value = malloc(sizeof(char) * len);
+    if (!e->value) {
+        free(e);
+        return NULL; /* could not allocate space */
+    }
+    memcpy(e->value, s, len);
+    INIT_LIST_HEAD(&e->list);
     list_add(&e->list, head);
     return true;
 }
@@ -67,9 +75,17 @@ bool q_insert_tail(struct list_head *head, char *s)
 {
     if (!head || !s)
         return false; /* queue is NULL or s is NULL*/
-    element_t *e = q_gen_element(s);
+    element_t *e = malloc(sizeof(element_t));
     if (!e)
-        return false; /* could not allocate space */
+        return NULL; /* could not allocate space */
+    int len = strlen(s) + 1;
+    e->value = malloc(sizeof(char) * len);
+    if (!e->value) {
+        free(e);
+        return NULL; /* could not allocate space */
+    }
+    memcpy(e->value, s, len);
+    INIT_LIST_HEAD(&e->list);
     list_add_tail(&e->list, head);
     return true;
 }
@@ -213,24 +229,3 @@ void q_reverse(struct list_head *head) {}
  * element, do nothing.
  */
 void q_sort(struct list_head *head) {}
-
-/*
- * Generate an element that with sp string
- * Return the element if success
- * Return NULL if could not allocate space.
- */
-element_t *q_gen_element(char *sp)
-{
-    element_t *e = malloc(sizeof(element_t));
-    if (!e)
-        return NULL; /* could not allocate space */
-    int len = strlen(sp) + 1;
-    e->value = malloc(sizeof(char) * len);
-    if (!e->value) {
-        free(e);
-        return NULL; /* could not allocate space */
-    }
-    memcpy(e->value, sp, len);
-    INIT_LIST_HEAD(&e->list);
-    return e;
-}

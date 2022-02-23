@@ -210,10 +210,23 @@ bool q_delete_dup(struct list_head *head)
 
 /*
  * Attempt to swap every two adjacent nodes.
+ * https://leetcode.com/problems/swap-nodes-in-pairs/
  */
 void q_swap(struct list_head *head)
 {
-    // https://leetcode.com/problems/swap-nodes-in-pairs/
+    if (!head || list_empty(head) || list_is_singular(head))
+        return;
+    struct list_head *node, *safe;
+    for (node = head->next, safe = node->next; node != head && safe != head;
+         node = safe, safe = node->next) {
+        safe = safe->next;
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        node->next->next = node;
+        node->prev = node->next;
+        safe->prev = node;
+        node->next = safe;
+    }
 }
 
 /*

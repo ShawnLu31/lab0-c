@@ -38,6 +38,24 @@ void q_free(struct list_head *l)
     free(l);
     return;
 }
+/* Return an element that contains string s.
+ * Return NULL if could not allocate space.
+ */
+element_t *gen_element(char *s)
+{
+    element_t *e = malloc(sizeof(element_t));
+    if (!e)
+        return NULL; /* could not allocate space */
+    int len = strlen(s) + 1;
+    e->value = malloc(sizeof(char) * len);
+    if (!e->value) {
+        free(e);
+        return NULL; /* could not allocate space */
+    }
+    memcpy(e->value, s, len);
+    INIT_LIST_HEAD(&e->list);
+    return e;
+}
 
 /*
  * Attempt to insert element at head of queue.
@@ -72,22 +90,6 @@ bool q_insert_tail(struct list_head *head, char *s)
         return false;
     list_add_tail(&e->list, head);
     return true;
-}
-
-element_t *gen_element(char *s)
-{
-    element_t *e = malloc(sizeof(element_t));
-    if (!e)
-        return NULL; /* could not allocate space */
-    int len = strlen(s) + 1;
-    e->value = malloc(sizeof(char) * len);
-    if (!e->value) {
-        free(e);
-        return NULL; /* could not allocate space */
-    }
-    memcpy(e->value, s, len);
-    INIT_LIST_HEAD(&e->list);
-    return e;
 }
 
 /*

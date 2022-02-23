@@ -50,17 +50,9 @@ bool q_insert_head(struct list_head *head, char *s)
 {
     if (!head || !s)
         return false; /* queue is NULL or s is NULL*/
-    element_t *e = malloc(sizeof(element_t));
+    element_t *e = gen_element(s);
     if (!e)
-        return NULL; /* could not allocate space */
-    int len = strlen(s) + 1;
-    e->value = malloc(sizeof(char) * len);
-    if (!e->value) {
-        free(e);
-        return NULL; /* could not allocate space */
-    }
-    memcpy(e->value, s, len);
-    INIT_LIST_HEAD(&e->list);
+        return false;
     list_add(&e->list, head);
     return true;
 }
@@ -75,6 +67,15 @@ bool q_insert_tail(struct list_head *head, char *s)
 {
     if (!head || !s)
         return false; /* queue is NULL or s is NULL*/
+    element_t *e = gen_element(s);
+    if (!e)
+        return false;
+    list_add_tail(&e->list, head);
+    return true;
+}
+
+element_t *gen_element(char *s)
+{
     element_t *e = malloc(sizeof(element_t));
     if (!e)
         return NULL; /* could not allocate space */
@@ -86,8 +87,7 @@ bool q_insert_tail(struct list_head *head, char *s)
     }
     memcpy(e->value, s, len);
     INIT_LIST_HEAD(&e->list);
-    list_add_tail(&e->list, head);
-    return true;
+    return e;
 }
 
 /*

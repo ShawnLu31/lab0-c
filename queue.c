@@ -235,7 +235,19 @@ void q_swap(struct list_head *head)
  * (e.g., by calling q_insert_head, q_insert_tail, or q_remove_head).
  * It should rearrange the existing ones.
  */
-void q_reverse(struct list_head *head) {}
+void q_reverse(struct list_head *head)
+{
+    if (!head || list_empty(head))
+        return;
+    struct list_head *node, *next;
+    list_for_each_safe (node, next, head) {
+        node->next = node->prev;
+        node->prev = next;
+    }
+    node->next = node->prev;
+    node->prev = next;
+    return;
+}
 
 /*
  * Sort elements of queue in ascending order

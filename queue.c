@@ -189,7 +189,7 @@ bool q_delete_dup(struct list_head *head)
     if (!head)
         return false;
     element_t *first_dup, *node, *next;
-    char *str = "";
+    char *str = malloc(sizeof(char) * 1024);
     list_for_each_entry_safe (node, next, head, list) {
         if (strcmp(str, node->value) == 0) {
             list_del_init(&node->list);
@@ -204,6 +204,7 @@ bool q_delete_dup(struct list_head *head)
             memcpy(str, node->value, strlen(node->value) + 1);
         }
     }
+    free(str);
     return true;
 }
 

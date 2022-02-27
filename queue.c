@@ -188,23 +188,25 @@ bool q_delete_dup(struct list_head *head)
 {
     if (!head)
         return false;
-    element_t *first_dup, *node, *next;
-    char *str = malloc(sizeof(char) * 1024);
+    element_t *node, *next;
+    char *str = "\0";
     list_for_each_entry_safe (node, next, head, list) {
         if (strcmp(str, node->value) == 0) {
+            str = list_entry(node->list.prev, element_t, list)->value;
             list_del_init(&node->list);
             q_release_element(node);
             if (strcmp(str, next->value) != 0) {
                 /* delete the frist node that have duplicate string */
-                first_dup = list_entry(next->list.prev, element_t, list);
+                element_t *first_dup =
+                    list_entry(next->list.prev, element_t, list);
                 list_del_init(&first_dup->list);
                 q_release_element(first_dup);
+                str = "\0";
             }
         } else {
-            memcpy(str, node->value, strlen(node->value) + 1);
+            str = node->value;
         }
     }
-    free(str);
     return true;
 }
 

@@ -283,5 +283,7 @@ void sort(struct list_head *head, struct list_head *tail)
  */
 void q_sort(struct list_head *head)
 {
+    if (!head || list_empty(head) || list_is_singular(head))
+        return;
     sort(head->next, head->prev);
 }

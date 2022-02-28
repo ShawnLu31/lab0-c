@@ -252,9 +252,36 @@ void q_reverse(struct list_head *head)
     return;
 }
 
+void sort(struct list_head *head, struct list_head *tail)
+{
+    if (tail->next == head || head == tail)
+        return;
+    struct list_head **prev = &head, **next = &head;
+    char *head_str = list_entry(head, element_t, list)->value;
+    for (; (*next) != tail && (*prev) != tail;) {
+        char *str = list_entry((*next)->next, element_t, list)->value;
+        if (strcmp(str, head_str) < 0) {
+            (*prev)->prev->next = (*next)->next;
+            (*next)->next->prev = (*prev)->prev;
+            (*prev)->prev = (*next)->next;
+            (*next)->next = (*next)->next->next;
+            (*next)->next->prev = *next;
+            (*prev)->prev->next = *prev;
+            prev = &(*prev)->prev;
+        } else {
+            next = &(*next)->next;
+        }
+    }
+    sort(*prev, head->prev);
+    sort(head->next, *next);
+    return;
+}
 /*
  * Sort elements of queue in ascending order
  * No effect if q is NULL or empty. In addition, if q has only one
  * element, do nothing.
  */
-void q_sort(struct list_head *head) {}
+void q_sort(struct list_head *head)
+{
+    sort(head->next, head->prev);
+}
